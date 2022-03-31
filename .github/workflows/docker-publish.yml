@@ -24,12 +24,19 @@ jobs:
       - name: Build image
         run: docker buildx build . --file Dockerfile --tag $IMAGE_NAME
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      # - name: Log into registry
+      #   run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/mikaelhg/mkdocs-material-plantuml
+          IMAGE_ID=lncknightqf/test-mkdocs-material-plantuml
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
